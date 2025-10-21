@@ -1,16 +1,16 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Car, Search, Camera } from 'lucide-react';
+import { Car, Search, Camera, Plus, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useAuth } from '@/context/AuthContext';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { useVehicleStock } from '@/hooks/useVehicleStock';
 import AddVehicleDialog from '@/components/vehicle/AddVehicleDialog';
+import Header from '@/components/layout/Header';
 
 const VehicleStockDashboard = () => {
   const navigate = useNavigate();
@@ -72,65 +72,82 @@ const VehicleStockDashboard = () => {
     }
   };
 
+  const actionButtons = (
+    <>
+      <AddVehicleDialog onVehicleAdded={refetchVehicles} />
+      <Button variant="outline">
+        <Upload className="w-4 h-4 mr-2" />
+        Importar Veículos
+      </Button>
+    </>
+  );
+
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
-      {/* Header */}
-      <header className="bg-petshop-blue dark:bg-gray-800 text-white shadow-md transition-colors duration-300">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => navigate('/dashboard')}
-              className="text-white hover:bg-white/10"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <Car className="h-8 w-8 text-petshop-gold" />
-            <h1 className="text-2xl font-bold">Alvorada Veículos</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <Badge variant="outline" className="bg-white/10 text-white border-0 px-3 py-1">
-              {user?.user_metadata?.name || user?.email}
-            </Badge>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
-              Estoque de Veículos
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400">
-              Gerencie o estoque de veículos disponíveis
-            </p>
-          </div>
-          <div className="flex items-center gap-4">
-            <AddVehicleDialog onVehicleAdded={refetchVehicles} />
-            <Badge variant="secondary" className="px-4 py-2 text-lg">
-              {totalVehicles} veículos
-            </Badge>
-          </div>
-        </div>
-
-        {/* Search Bar */}
-        <Card className="mb-6 dark:bg-gray-800 dark:border-gray-700">
-          <CardContent className="pt-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Buscar por marca, modelo, ano, cor ou status..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
+    <div className="flex-1 overflow-auto">
+      <Header 
+        title="Estoque de Veículos" 
+        subtitle="Gerencie todos os seus veículos em um só lugar"
+        showSearch={true}
+        showActions={true}
+        searchPlaceholder="Buscar por marca, modelo, ano, cor ou status..."
+        actionButtons={actionButtons}
+      />
+      
+      <main className="p-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total</p>
+                <p className="text-2xl font-bold text-blue-600">{totalVehicles}</p>
+              </div>
+              <div className="p-3 rounded-lg bg-blue-50">
+                <Car className="w-6 h-6 text-blue-600" />
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Disponíveis</p>
+                <p className="text-2xl font-bold text-green-600">{vehicles.filter(v => v.status?.toLowerCase() === 'disponível' || v.status?.toLowerCase() === 'disponivel').length}</p>
+              </div>
+              <div className="p-3 rounded-lg bg-green-50">
+                <Car className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Vendidos</p>
+                <p className="text-2xl font-bold text-red-600">{vehicles.filter(v => v.status?.toLowerCase() === 'vendido').length}</p>
+              </div>
+              <div className="p-3 rounded-lg bg-red-50">
+                <Car className="w-6 h-6 text-red-600" />
+              </div>
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Reservados</p>
+                <p className="text-2xl font-bold text-yellow-600">{vehicles.filter(v => v.status?.toLowerCase() === 'reservado').length}</p>
+              </div>
+              <div className="p-3 rounded-lg bg-yellow-50">
+                <Car className="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Page Info */}
+        <div className="mb-6 flex items-center justify-between">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {filteredVehicles.length} de {totalVehicles} veículos
+          </p>
+        </div>
 
         {/* Vehicles Table */}
         <Card className="dark:bg-gray-800 dark:border-gray-700">
