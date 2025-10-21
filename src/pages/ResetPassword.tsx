@@ -104,7 +104,7 @@ const ResetPassword = () => {
         toast.error('Erro ao atualizar senha: ' + error.message);
       } else {
         toast.success('Senha atualizada com sucesso!');
-        navigate('/dashboard');
+        navigate('/metrics');
       }
     } catch (error) {
       console.error('Unexpected error:', error);

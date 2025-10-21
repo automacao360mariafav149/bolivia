@@ -1,20 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  Home, 
   MessageSquare, 
   Users, 
   Calendar, 
-  BarChart3, 
-  BookOpen, 
-  Instagram, 
-  FileText,
-  Settings,
+  BarChart3,
   Car,
   Camera,
-  TrendingUp,
-  Clock,
-  Send,
   Brain
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -26,30 +18,20 @@ const Sidebar = () => {
     {
       title: "PRINCIPAL",
       items: [
-        { name: "Dashboard", href: "/dashboard", icon: Home },
         { name: "Métricas", href: "/metrics", icon: BarChart3 },
         { name: "Chats", href: "/chats", icon: MessageSquare },
         { name: "Conhecimento", href: "/knowledge", icon: Brain },
         { name: "Clientes", href: "/clients", icon: Users },
         { name: "Estoque de Veículos", href: "/vehicle-stock", icon: Car },
-        { name: "Grupo WhatsApp", href: "/whatsapp-group", icon: MessageSquare },
-        { name: "Evolution", href: "/evolution", icon: Send },
         { name: "Agenda", href: "/schedule", icon: Calendar },
         { name: "Novos Carros", href: "/new-cars", icon: Car },
         { name: "Post de Carro", href: "/car-post", icon: Camera },
-        { name: "Instagram", href: "/instagram-metrics", icon: Instagram },
-        { name: "Grupos WhatsApp Clientes", href: "/whatsapp-client-groups", icon: MessageSquare },
-        { name: "Configuração", href: "/configuration", icon: FileText },
-        { name: "Configuração do Agente", href: "/agent-config", icon: Settings },
       ]
     }
   ];
 
   const isActive = (href: string) => {
-    if (href === '/dashboard') {
-      return location.pathname === '/' || location.pathname === '/dashboard';
-    }
-    return location.pathname === href;
+    return location.pathname === href || (href === '/metrics' && location.pathname === '/');
   };
 
   return (

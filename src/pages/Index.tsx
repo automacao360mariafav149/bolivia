@@ -36,8 +36,8 @@ const Index = () => {
 
   useEffect(() => {
     if (user) {
-      console.log('Usuário logado, redirecionando para dashboard');
-      navigate('/dashboard');
+      console.log('Usuário logado, redirecionando para métricas');
+      navigate('/metrics');
     }
   }, [user, navigate]);
 

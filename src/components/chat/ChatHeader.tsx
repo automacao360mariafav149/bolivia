@@ -10,7 +10,7 @@ const ChatHeader = () => {
   const navigate = useNavigate();
 
   const goBack = () => {
-    navigate('/dashboard');
+    navigate('/metrics');
   };
 
   return (

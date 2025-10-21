@@ -30,7 +30,7 @@ const KnowledgeManager = () => {
   } = useDocuments();
 
   const handleBackToDashboard = () => {
-    navigate('/dashboard');
+    navigate('/metrics');
   };
 
   const handleAddDocument = async (file: File, category: string) => {
