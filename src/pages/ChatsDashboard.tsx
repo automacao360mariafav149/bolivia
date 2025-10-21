@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import ChatHeader from '@/components/chat/ChatHeader';
 import ChatLayout from '@/components/chat/ChatLayout';
@@ -11,7 +10,6 @@ import PauseDurationDialog from '@/components/PauseDurationDialog';
 import { getAllEndpoints } from '@/constants/apiEndpoints';
 
 const ChatsDashboard = () => {
-  const { user, signOut } = useAuth();
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
   const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
@@ -139,7 +137,7 @@ const ChatsDashboard = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
-      <ChatHeader signOut={signOut} />
+      <ChatHeader />
       
       <PauseDurationDialog 
         isOpen={pauseDialogOpen}

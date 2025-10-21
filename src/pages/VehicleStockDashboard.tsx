@@ -7,14 +7,12 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useAuth } from '@/context/AuthContext';
 import { useVehicleStock } from '@/hooks/useVehicleStock';
 import AddVehicleDialog from '@/components/vehicle/AddVehicleDialog';
 import Header from '@/components/layout/Header';
 
 const VehicleStockDashboard = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { vehicles, loading, totalVehicles, refetchVehicles } = useVehicleStock();
   const [searchTerm, setSearchTerm] = useState('');
 

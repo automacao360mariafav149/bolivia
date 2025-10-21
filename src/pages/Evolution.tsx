@@ -8,13 +8,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useAuth } from '@/context/AuthContext';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useToast } from '@/hooks/use-toast';
 
 const Evolution = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { toast } = useToast();
   
   const [evolutionUrl, setEvolutionUrl] = useState('');
@@ -76,7 +74,7 @@ const Evolution = () => {
           </div>
           <div className="flex items-center gap-4">
             <Badge variant="outline" className="bg-white/10 text-white border-0 px-3 py-1">
-              {user?.user_metadata?.name || user?.email}
+              Alvorada Veículos
             </Badge>
             <ThemeToggle />
           </div>

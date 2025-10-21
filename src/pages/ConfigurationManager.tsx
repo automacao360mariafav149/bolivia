@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Car } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/context/AuthContext';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 // Default webhook base URL
@@ -91,7 +90,6 @@ const ConfigurationManager = () => {
   
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
 
   const handleEndpointChange = (key: string, value: string) => {
     setEndpoints(prev => ({ ...prev, [key]: value }));
@@ -132,7 +130,7 @@ const ConfigurationManager = () => {
           </div>
           <div className="flex items-center gap-4">
             <Badge variant="outline" className="bg-white/10 text-white border-0 px-3 py-1">
-              {user?.user_metadata?.name || user?.email}
+              Alvorada Veículos
             </Badge>
             <ThemeToggle />
           </div>

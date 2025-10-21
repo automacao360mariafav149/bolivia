@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Car, LogOut, ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +14,6 @@ import AddDocumentDialog from '@/components/knowledge/AddDocumentDialog';
 import { useDocuments } from '@/hooks/useDocuments';
 
 const KnowledgeManager = () => {
-  const { user, signOut, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,7 +37,7 @@ const KnowledgeManager = () => {
     await uploadFileToWebhook(file, category);
   };
 
-  if (isLoading || authLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-petshop-blue dark:bg-gray-900">
         <div className="h-16 w-16 border-4 border-t-transparent border-petshop-gold rounded-full animate-spin"></div>
@@ -57,13 +55,9 @@ const KnowledgeManager = () => {
           </div>
           <div className="flex items-center gap-4">
             <Badge variant="outline" className="bg-white/10 text-white border-0 px-3 py-1">
-              Bem-vindo, {user?.user_metadata?.name || user?.email}
+              Alvorada Veículos
             </Badge>
             <ThemeToggle />
-            <Button variant="outline" onClick={signOut} className="border-white text-white bg-gray-950/50 hover:bg-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600">
-              <LogOut className="mr-2 h-4 w-4" />
-              Sair
-            </Button>
           </div>
         </div>
       </header>

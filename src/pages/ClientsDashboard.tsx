@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Header from '@/components/layout/Header';
 import ClientSearchBar from '@/components/clients/ClientSearchBar';
@@ -14,7 +13,6 @@ import { Plus, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const ClientsDashboard = () => {
-  const { user, isLoading } = useAuth();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = React.useState('');
   
@@ -50,17 +48,6 @@ const ClientsDashboard = () => {
     handlePauseDurationConfirm
   } = useClientManagement();
 
-  React.useEffect(() => {
-    if (!isLoading && !user) {
-      navigate('/');
-    }
-  }, [user, isLoading, navigate]);
-
-  if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center bg-petshop-blue dark:bg-gray-900">
-      <div className="h-16 w-16 border-4 border-t-transparent border-petshop-gold rounded-full animate-spin"></div>
-    </div>;
-  }
 
   const actionButtons = (
     <>

@@ -4,16 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { ArrowLeft, LogOut, Car } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { ArrowLeft, Car } from 'lucide-react';
 
-interface ChatHeaderProps {
-  signOut: () => void;
-}
-
-const ChatHeader = ({ signOut }: ChatHeaderProps) => {
+const ChatHeader = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   const goBack = () => {
     navigate('/dashboard');
@@ -36,13 +30,9 @@ const ChatHeader = ({ signOut }: ChatHeaderProps) => {
         </div>
         <div className="flex items-center gap-4">
           <Badge variant="outline" className="bg-white/10 text-white border-0 px-3 py-1">
-            {user?.user_metadata?.name || user?.email}
+            Alvorada Veículos
           </Badge>
           <ThemeToggle />
-          <Button variant="outline" onClick={signOut} className="border-white text-white bg-gray-950/50 hover:bg-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600">
-            <LogOut className="mr-2 h-4 w-4" />
-            Sair
-          </Button>
         </div>
       </div>
     </header>

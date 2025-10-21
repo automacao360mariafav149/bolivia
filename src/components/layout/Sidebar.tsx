@@ -11,6 +11,7 @@ import {
   FileText,
   Settings,
   Car,
+  Camera,
   TrendingUp,
   Clock,
   Send,
@@ -26,23 +27,20 @@ const Sidebar = () => {
       title: "PRINCIPAL",
       items: [
         { name: "Dashboard", href: "/dashboard", icon: Home },
-        { name: "Chats", href: "/chats", icon: MessageSquare },
-        { name: "Clientes", href: "/clients", icon: Users },
-        { name: "Agenda", href: "/schedule", icon: Calendar },
-        { name: "Estoque de Veículos", href: "/vehicle-stock", icon: Car },
-        { name: "Grupos WhatsApp", href: "/whatsapp-group", icon: MessageSquare },
-        { name: "Horário de Trabalho", href: "/schedule", icon: Clock },
-        { name: "Disparador", href: "/evolution", icon: Send },
-        { name: "Conhecimento", href: "/knowledge", icon: Brain },
-        { name: "Instagram", href: "/instagram-metrics", icon: Instagram },
-        { name: "Contratos", href: "/configuration", icon: FileText },
-      ]
-    },
-    {
-      title: "ANALYTICS",
-      items: [
         { name: "Métricas", href: "/metrics", icon: BarChart3 },
-        { name: "Relatórios", href: "/evolution", icon: TrendingUp },
+        { name: "Chats", href: "/chats", icon: MessageSquare },
+        { name: "Conhecimento", href: "/knowledge", icon: Brain },
+        { name: "Clientes", href: "/clients", icon: Users },
+        { name: "Estoque de Veículos", href: "/vehicle-stock", icon: Car },
+        { name: "Grupo WhatsApp", href: "/whatsapp-group", icon: MessageSquare },
+        { name: "Evolution", href: "/evolution", icon: Send },
+        { name: "Agenda", href: "/schedule", icon: Calendar },
+        { name: "Novos Carros", href: "/new-cars", icon: Car },
+        { name: "Post de Carro", href: "/car-post", icon: Camera },
+        { name: "Instagram", href: "/instagram-metrics", icon: Instagram },
+        { name: "Grupos WhatsApp Clientes", href: "/whatsapp-client-groups", icon: MessageSquare },
+        { name: "Configuração", href: "/configuration", icon: FileText },
+        { name: "Configuração do Agente", href: "/agent-config", icon: Settings },
       ]
     }
   ];

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/context/AuthContext';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 interface WhatsAppGroupHeaderProps {
@@ -13,7 +12,6 @@ interface WhatsAppGroupHeaderProps {
 
 const WhatsAppGroupHeader = ({ messagesCount }: WhatsAppGroupHeaderProps) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   return (
     <>
@@ -34,7 +32,7 @@ const WhatsAppGroupHeader = ({ messagesCount }: WhatsAppGroupHeaderProps) => {
           </div>
           <div className="flex items-center gap-4">
             <Badge variant="outline" className="bg-white/10 text-white border-0 px-3 py-1">
-              {user?.user_metadata?.name || user?.email}
+              Alvorada Veículos
             </Badge>
             <ThemeToggle />
           </div>
