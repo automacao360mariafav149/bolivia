@@ -2,7 +2,7 @@ name: Deploy Automático via FTP
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 concurrency:
   group: deploy-${{ github.ref }}
@@ -76,4 +76,3 @@ jobs:
           echo "🚀 Deploy realizado com sucesso!"
           echo "📅 Data: $(date)"
           echo "🔖 Commit: ${{ github.sha }}"
-
