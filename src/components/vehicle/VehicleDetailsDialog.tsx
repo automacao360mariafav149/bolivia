@@ -73,24 +73,45 @@ const VehicleDetailsDialog: React.FC<VehicleDetailsDialogProps> = ({
   const handleSave = async () => {
     if (!vehicle) return;
 
+    // Validar que marca não está vazia (campo obrigatório)
+    if (!formData.marca || formData.marca.trim() === '') {
+      toast({
+        title: 'Campo obrigatório',
+        description: 'A marca é obrigatória.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsSaving(true);
     try {
-      const { error } = await supabase
-        .from('estoque')
-        .update({
-          marca: formData.marca,
-          modelo: formData.modelo,
-          ano: formData.ano,
-          cor: formData.cor,
-          Km: formData.Km,
-          preco: formData.preco,
-          descricao: formData.descricao,
-          drive_id: formData.drive_id,
-          id_unico: formData.id_unico,
-        })
-        .eq('id', vehicle.id);
+      // Preparar dados para atualização - removendo campos undefined/null que podem causar erro
+      const updateData: any = {};
+      
+      if (formData.marca !== undefined && formData.marca !== '') updateData.marca = formData.marca;
+      if (formData.modelo !== undefined) updateData.modelo = formData.modelo || null;
+      if (formData.ano !== undefined) updateData.ano = formData.ano || null;
+      if (formData.cor !== undefined) updateData.cor = formData.cor || null;
+      if (formData.Km !== undefined) updateData.Km = formData.Km || null;
+      if (formData.preco !== undefined) updateData.preco = formData.preco || null;
+      if (formData.descricao !== undefined) updateData.descricao = formData.descricao || null;
+      if (formData.drive_id !== undefined) updateData.drive_id = formData.drive_id || null;
+      if (formData.id_unico !== undefined) updateData.id_unico = formData.id_unico || null;
 
-      if (error) throw error;
+      console.log('Updating with data:', updateData);
+
+      const { error, data } = await supabase
+        .from('estoque')
+        .update(updateData)
+        .eq('id', vehicle.id)
+        .select();
+
+      if (error) {
+        console.error('Update error:', error);
+        throw error;
+      }
+
+      console.log('Update successful:', data);
 
       toast({
         title: 'Veículo atualizado',
