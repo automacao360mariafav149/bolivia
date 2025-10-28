@@ -6,7 +6,9 @@ import { supabase } from '@/integrations/supabase/client';
 export function useClientStats() {
   const [stats, setStats] = useState({
     totalClients: 0,
+    activeClients: 0,
     newClientsThisMonth: 0,
+    growthPercentage: 0,
     monthlyGrowth: [],
     recentClients: []
   });
@@ -22,15 +24,36 @@ export function useClientStats() {
         .from('dados_cliente')
         .select('*', { count: 'exact' });
 
+      // Fetch active clients
+      const { count: activeClients } = await supabase
+        .from('dados_cliente')
+        .select('*', { count: 'exact' })
+        .eq('status', 'Active');
+
       // Fetch new clients this month (from 1st of current month to today)
       const today = new Date();
       const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-      
+
       const { count: newClientsThisMonth } = await supabase
         .from('dados_cliente')
         .select('*', { count: 'exact' })
         .gte('created_at', firstDayOfMonth.toISOString())
         .lte('created_at', today.toISOString());
+
+      // Fetch last month's clients to calculate growth
+      const firstDayOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+
+      const { count: lastMonthClients } = await supabase
+        .from('dados_cliente')
+        .select('*', { count: 'exact' })
+        .gte('created_at', firstDayOfLastMonth.toISOString())
+        .lte('created_at', lastDayOfLastMonth.toISOString());
+
+      // Calculate growth percentage
+      const growthPercentage = lastMonthClients && lastMonthClients > 0
+        ? Math.round(((newClientsThisMonth || 0) - lastMonthClients) / lastMonthClients * 100)
+        : 0;
 
       // Fetch monthly growth data
       const currentYear = new Date().getFullYear();
@@ -71,7 +94,9 @@ export function useClientStats() {
       // Update stats
       setStats({
         totalClients: totalClients || 0,
+        activeClients: activeClients || 0,
         newClientsThisMonth: newClientsThisMonth || 0,
+        growthPercentage,
         monthlyGrowth: monthlyGrowthData,
         recentClients
       });

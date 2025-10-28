@@ -31,63 +31,88 @@ export const formatMessageTime = (date: Date): string => {
 
 export const parseMessage = (chatHistory: N8nChatHistory): ChatMessage[] => {
   const parsedMessages: ChatMessage[] = [];
-  
+
   try {
-    const timestamp = chatHistory.data ? extractHourFromTimestamp(chatHistory.data) : '';
-    
+    const timestamp = chatHistory.hora || chatHistory.data || new Date().toISOString();
+
     if (typeof chatHistory.message === 'string') {
       try {
         const jsonMessage = JSON.parse(chatHistory.message);
         if (jsonMessage.type && jsonMessage.content) {
           parsedMessages.push({
+            id: chatHistory.id,
             role: jsonMessage.type === 'human' ? 'user' : 'assistant',
             content: jsonMessage.content,
             type: jsonMessage.type,
-            timestamp: timestamp
+            timestamp: timestamp,
+            message: {
+              type: jsonMessage.type,
+              content: jsonMessage.content
+            },
+            data: timestamp,
+            session_id: chatHistory.session_id,
+            instancia: 'web'
           });
           return parsedMessages;
         }
       } catch (e) {
         parsedMessages.push({
+          id: chatHistory.id,
           role: 'unknown',
           content: chatHistory.message,
-          timestamp: timestamp
+          timestamp: timestamp,
+          data: timestamp,
+          session_id: chatHistory.session_id
         });
         return parsedMessages;
       }
     }
-    
+
     if (chatHistory.message && typeof chatHistory.message === 'object') {
       if (chatHistory.message.type && chatHistory.message.content) {
         parsedMessages.push({
+          id: chatHistory.id,
           role: chatHistory.message.type === 'human' ? 'user' : 'assistant',
           type: chatHistory.message.type,
           content: chatHistory.message.content,
-          timestamp: timestamp
+          timestamp: timestamp,
+          message: {
+            type: chatHistory.message.type,
+            content: chatHistory.message.content
+          },
+          data: timestamp,
+          session_id: chatHistory.session_id,
+          instancia: 'web'
         });
-      } 
+      }
       else if (chatHistory.message.messages && Array.isArray(chatHistory.message.messages)) {
-        chatHistory.message.messages.forEach((msg: any) => {
+        chatHistory.message.messages.forEach((msg: any, index: number) => {
           if (msg.role && msg.content) {
             parsedMessages.push({
+              id: chatHistory.id + index,
               role: msg.role,
               content: msg.content,
-              timestamp: timestamp
+              timestamp: timestamp,
+              data: timestamp,
+              session_id: chatHistory.session_id
             });
           }
         });
       }
       else if (chatHistory.message.role && chatHistory.message.content) {
         parsedMessages.push({
+          id: chatHistory.id,
           role: chatHistory.message.role,
           content: chatHistory.message.content,
-          timestamp: timestamp
+          timestamp: timestamp,
+          data: timestamp,
+          session_id: chatHistory.session_id
         });
       }
     }
   } catch (error) {
     console.error('Error parsing message:', error, chatHistory);
   }
-  
+
   return parsedMessages;
 };

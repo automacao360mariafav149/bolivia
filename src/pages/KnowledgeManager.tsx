@@ -2,10 +2,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Car, LogOut, ArrowLeft } from 'lucide-react';
+import { Car, ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { useToast } from '@/hooks/use-toast';
 
 // Import refactored components
 import SearchBar from '@/components/knowledge/SearchBar';
@@ -15,7 +14,6 @@ import { useDocuments } from '@/hooks/useDocuments';
 
 const KnowledgeManager = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddDocumentOpen, setIsAddDocumentOpen] = useState(false);
   
@@ -77,6 +75,7 @@ const KnowledgeManager = () => {
             Gerenciador de Conhecimento - Alvorada Veículos
           </h2>
         </div>
+
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
           <SearchBar 

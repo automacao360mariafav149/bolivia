@@ -36,4 +36,14 @@ export interface Conversation {
   address?: string;
   sessionId: string;
   status?: string;
+  lead?: {
+    name: string;
+    phone: string;
+    email?: string;
+    source?: string;
+    stage?: string;
+    interest?: string;
+  };
+  lastActivity?: string;
+  messageCount?: number;
 }

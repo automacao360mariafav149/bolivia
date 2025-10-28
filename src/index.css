@@ -57,41 +57,67 @@
   }
 
   .dark {
+    /* Cores de fundo - bg-slate-950 (quase preto) */
     --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    /* Texto principal - text-white */
+    --foreground: 0 0% 100%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    /* Cards/containers - bg-slate-900 */
+    --card: 222.2 47.4% 11.2%;
+    --card-foreground: 0 0% 100%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Primário - bg-blue-600 */
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 0 0% 100%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Hover/ativos - bg-slate-800 ou bg-slate-700 */
+    --secondary: 214.3 31.8% 22.9%;
+    --secondary-foreground: 210 40% 96.1%;
 
+    /* Muted - text-slate-400 */
+    --muted: 214.3 31.8% 46.1%;
+    --muted-foreground: 210 40% 96.1%;
+
+    /* Accent - bg-slate-700 */
     --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destrutivo - bg-red-600 */
+    --destructive: 0 72.2% 50.6%;
+    --destructive-foreground: 0 0% 100%;
 
+    /* Bordas - border-slate-700 */
     --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    
+    /* Inputs - bg-slate-800 */
+    --input: 214.3 31.8% 22.9%;
+    
+    /* Ring para focus - border-blue-500 */
+    --ring: 217.2 91.2% 59.8%;
+    
+    /* Sidebar - bg-slate-900 */
+    --sidebar-background: 222.2 47.4% 11.2%;
+    --sidebar-foreground: 210 40% 96.1%;
+    
+    /* Sidebar primary - bg-blue-600 */
+    --sidebar-primary: 217.2 91.2% 59.8%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
+    
+    /* Sidebar accent - bg-slate-800 */
+    --sidebar-accent: 214.3 31.8% 22.9%;
+    --sidebar-accent-foreground: 210 40% 96.1%;
+    
+    /* Sidebar border - border-slate-700 */
+    --sidebar-border: 217.2 32.6% 17.5%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Cores específicas para temas escuros */
+    --petshop-blue: 217.2 91.2% 59.8%;
+    --petshop-gold: 38 92% 50%;
   }
 }
 

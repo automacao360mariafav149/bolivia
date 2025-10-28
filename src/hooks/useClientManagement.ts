@@ -20,11 +20,16 @@ export const useClientManagement = () => {
     name: '',
     email: '',
     phone: '',
-    address: '',
+    cpf: '',
     cpfCnpj: '',
-    asaasCustomerId: '',
+    nascimento: '',
+    modelo: '',
+    cor: '',
+    preco: '',
+    data_agendamento: '',
+    funcionario: '',
+    confirmação: '',
     status: 'Active',
-    notes: '',
   });
 
   const fetchClients = async () => {
@@ -45,11 +50,17 @@ export const useClientManagement = () => {
           name: client.nome || 'Cliente sem nome',
           email: client.email,
           phone: client.telefone,
+          cpf: client.cpf,
           cpfCnpj: client.cpf_cnpj,
-          asaasCustomerId: client.asaas_customer_id,
-          payments: client.payments,
+          nascimento: client.nascimento,
+          modelo: client.modelo,
+          cor: client.cor,
+          preco: client.preco,
+          data_agendamento: client.data_agendamento,
+          funcionario: client.funcionario,
+          confirmação: client.confirmação,
           status: client.status || 'Indefinido',
-          notes: '',
+          created_at: client.created_at,
           lastContact: client.created_at ? new Date(client.created_at).toLocaleDateString('pt-BR') : 'Desconhecido'
         }));
         
@@ -100,9 +111,16 @@ export const useClientManagement = () => {
             nome: newContact.name,
             email: newContact.email,
             telefone: newContact.phone,
+            cpf: newContact.cpf,
             cpf_cnpj: newContact.cpfCnpj,
-            asaas_customer_id: newContact.asaasCustomerId,
-            payments: newContact.payments || null
+            nascimento: newContact.nascimento,
+            modelo: newContact.modelo,
+            cor: newContact.cor,
+            preco: newContact.preco,
+            data_agendamento: newContact.data_agendamento,
+            funcionario: newContact.funcionario,
+            confirmação: newContact.confirmação,
+            status: newContact.status || 'Active'
           }
         ])
         .select();
@@ -116,11 +134,16 @@ export const useClientManagement = () => {
           name: '',
           email: '',
           phone: '',
-          address: '',
+          cpf: '',
           cpfCnpj: '',
-          asaasCustomerId: '',
+          nascimento: '',
+          modelo: '',
+          cor: '',
+          preco: '',
+          data_agendamento: '',
+          funcionario: '',
+          confirmação: '',
           status: 'Active',
-          notes: '',
         });
         
         setIsAddContactOpen(false);
@@ -171,9 +194,16 @@ export const useClientManagement = () => {
           nome: newContact.name,
           email: newContact.email,
           telefone: newContact.phone,
+          cpf: newContact.cpf,
           cpf_cnpj: newContact.cpfCnpj,
-          asaas_customer_id: newContact.asaasCustomerId,
-          payments: newContact.payments
+          nascimento: newContact.nascimento,
+          modelo: newContact.modelo,
+          cor: newContact.cor,
+          preco: newContact.preco,
+          data_agendamento: newContact.data_agendamento,
+          funcionario: newContact.funcionario,
+          confirmação: newContact.confirmação,
+          status: newContact.status
         })
         .eq('id', parseInt(selectedContact.id));
       
@@ -275,12 +305,16 @@ export const useClientManagement = () => {
       name: selectedContact.name,
       email: selectedContact.email,
       phone: selectedContact.phone,
-      address: selectedContact.address,
+      cpf: selectedContact.cpf,
       cpfCnpj: selectedContact.cpfCnpj,
-      asaasCustomerId: selectedContact.asaasCustomerId,
-      payments: selectedContact.payments,
+      nascimento: selectedContact.nascimento,
+      modelo: selectedContact.modelo,
+      cor: selectedContact.cor,
+      preco: selectedContact.preco,
+      data_agendamento: selectedContact.data_agendamento,
+      funcionario: selectedContact.funcionario,
+      confirmação: selectedContact.confirmação,
       status: selectedContact.status,
-      notes: selectedContact.notes,
     });
     setIsEditModalOpen(true);
   };

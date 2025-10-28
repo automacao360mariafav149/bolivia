@@ -4,11 +4,16 @@ export interface Contact {
   name: string;
   email: string | null;
   phone: string | null;
-  address?: string;
+  cpf: string | null;
   cpfCnpj: string | null;
-  asaasCustomerId: string | null;
-  payments?: any;
+  nascimento: string | null;
+  modelo: string | null;
+  cor: string | null;
+  preco: string | null;
+  data_agendamento: string | null;
+  funcionario: string | null;
+  confirmação: string | null;
   status: string;
-  notes?: string;
+  created_at: string | null;
   lastContact: string;
 }

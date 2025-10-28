@@ -76,8 +76,11 @@ export function useAppointmentManagement(appointmentType: AppointmentType, selec
         const emailMatch = event.attendees?.some(attendee => 
           attendee?.email?.toLowerCase().includes(searchLower)
         );
+        const nameMatch = event.attendees?.some(attendee => 
+          attendee?.displayName?.toLowerCase().includes(searchLower)
+        );
         
-        return summaryMatch || descriptionMatch || emailMatch;
+        return summaryMatch || descriptionMatch || emailMatch || nameMatch;
       });
       console.log('Filtered by search term:', filtered.length, 'events');
     }
@@ -109,7 +112,10 @@ export function useAppointmentManagement(appointmentType: AppointmentType, selec
           dateTime: `${format(formData.date, 'yyyy-MM-dd')}T${formData.endTime}:00`,
           timeZone: 'America/Sao_Paulo'
         },
-        attendees: formData.email ? [{ email: formData.email }] : []
+        attendees: formData.email || formData.clientName ? [{
+          email: formData.email || 'nao-informado@example.com',
+          displayName: formData.clientName || formData.email || 'Cliente'
+        }] : []
       };
 
       console.log('Event data to send to API:', eventData);

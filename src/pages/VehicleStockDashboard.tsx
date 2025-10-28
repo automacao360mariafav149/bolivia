@@ -10,11 +10,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useVehicleStock } from '@/hooks/useVehicleStock';
 import AddVehicleDialog from '@/components/vehicle/AddVehicleDialog';
 import Header from '@/components/layout/Header';
+import ImageCarousel from '@/components/vehicle/ImageCarousel';
+import DriveGallery from '@/components/vehicle/DriveGallery';
 
 const VehicleStockDashboard = () => {
   const navigate = useNavigate();
   const { vehicles, loading, totalVehicles, refetchVehicles } = useVehicleStock();
   const [searchTerm, setSearchTerm] = useState('');
+  const [carouselOpen, setCarouselOpen] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState<{driveId: string, info: string} | null>(null);
 
   const filteredVehicles = vehicles.filter(vehicle => 
     vehicle.marca.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -63,10 +67,13 @@ const VehicleStockDashboard = () => {
     return <Badge variant="outline">{status}</Badge>;
   };
 
-  const openPhotos = (driveId: string) => {
+  const openPhotos = (driveId: string, marca: string, modelo: string, ano: string) => {
     if (driveId) {
-      // Usar URL que abre as fotos em modo de galeria
-      window.open(`https://drive.google.com/drive/folders/${driveId}?usp=drive_link`, '_blank');
+      setSelectedVehicle({
+        driveId: driveId,
+        info: `${marca} ${modelo} ${ano}`
+      });
+      setCarouselOpen(true);
     }
   };
 
@@ -221,7 +228,7 @@ const VehicleStockDashboard = () => {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => openPhotos(vehicle.drive_id)}
+                              onClick={() => openPhotos(vehicle.drive_id, vehicle.marca, vehicle.modelo, vehicle.ano)}
                               disabled={!vehicle.drive_id}
                               className="flex items-center gap-2"
                             >
@@ -239,6 +246,35 @@ const VehicleStockDashboard = () => {
           </CardContent>
         </Card>
       </main>
+
+      {/* Galeria de Imagens */}
+      {selectedVehicle && (
+        <>
+          {/* Se o driveId contém vírgula, usa ImageCarousel (IDs individuais) */}
+          {/* Se não contém vírgula, usa DriveGallery (ID de pasta) */}
+          {selectedVehicle.driveId.includes(',') ? (
+            <ImageCarousel
+              isOpen={carouselOpen}
+              onClose={() => {
+                setCarouselOpen(false);
+                setSelectedVehicle(null);
+              }}
+              driveId={selectedVehicle.driveId}
+              vehicleInfo={selectedVehicle.info}
+            />
+          ) : (
+            <DriveGallery
+              isOpen={carouselOpen}
+              onClose={() => {
+                setCarouselOpen(false);
+                setSelectedVehicle(null);
+              }}
+              driveId={selectedVehicle.driveId}
+              vehicleInfo={selectedVehicle.info}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 };

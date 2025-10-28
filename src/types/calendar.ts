@@ -2,6 +2,7 @@
 // Define event types based on the API response
 export type CalendarAttendee = {
   email?: string;
+  displayName?: string;
   responseStatus?: 'needsAction' | 'declined' | 'tentative' | 'accepted';
 };
 
@@ -23,6 +24,10 @@ export type EventFormData = {
   date: Date;
   startTime: string;
   endTime: string;
+  clientId?: string | null;
+  clientName?: string | null;
+  vehicleId?: string | null;
+  vehicleInfo?: string | null;
 };
 
 // Appointment types (mock data)

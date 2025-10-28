@@ -51,16 +51,17 @@ export function useConversations() {
               }
               
               // Use hora field if available, otherwise fall back to data field
-              const messageDate = chatHistory.hora 
-                ? new Date(chatHistory.hora) 
-                : chatHistory.data 
-                  ? new Date(chatHistory.data) 
+              const messageDate = chatHistory.hora
+                ? new Date(chatHistory.hora)
+                : chatHistory.data
+                  ? new Date(chatHistory.data)
                   : new Date();
-                
+
               return {
                 ...conv,
                 lastMessage: lastMessageContent || 'Sem mensagem',
                 time: formatMessageTime(messageDate),
+                lastActivity: messageDate.toISOString(),
                 unread: conv.unread + 1
               };
             }
@@ -114,11 +115,29 @@ export function useConversations() {
             phone: client.telefone,
             email: client.email || 'Sem email',
             sessionId: client.sessionid,
-            status: client.status || 'Indefinido'
+            status: client.status || 'Indefinido',
+            lead: {
+              name: client.nome || 'Cliente sem nome',
+              phone: client.telefone,
+              email: client.email || '',
+              source: 'WhatsApp',
+              stage: client.status || 'Qualificação',
+              interest: ''
+            },
+            lastActivity: new Date().toISOString(),
+            messageCount: 0
           };
         });
         
         for (const conversation of conversationsData) {
+          // Get message count
+          const { count: messageCount } = await supabase
+            .from('n8n_chat_histories' as any)
+            .select('*', { count: 'exact', head: true })
+            .eq('session_id', conversation.sessionId);
+
+          conversation.messageCount = messageCount || 0;
+
           const { data: historyData, error: historyError } = await supabase
             .from('n8n_chat_histories' as any)
             .select('*')
@@ -153,15 +172,16 @@ export function useConversations() {
             }
             
             conversation.lastMessage = lastMessageContent || 'Sem mensagem';
-            
+
             // Use hora field if available, otherwise fall back to data field
-            const messageDate = chatHistory.hora 
-              ? new Date(chatHistory.hora) 
-              : chatHistory.data 
-                ? new Date(chatHistory.data) 
+            const messageDate = chatHistory.hora
+              ? new Date(chatHistory.hora)
+              : chatHistory.data
+                ? new Date(chatHistory.data)
                 : new Date();
-            
+
             conversation.time = formatMessageTime(messageDate);
+            conversation.lastActivity = messageDate.toISOString();
           }
         }
         

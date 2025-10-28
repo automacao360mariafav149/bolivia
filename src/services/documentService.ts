@@ -30,12 +30,38 @@ export const fetchDocumentsFromDatabase = async (): Promise<Document[]> => {
   return formattedDocs;
 };
 
+/**
+ * WEBHOOK DE UPLOAD - enviaRagc
+ * 
+ * Envia um arquivo para o sistema de conhecimento (RAG)
+ * 
+ * @endpoint https://n8n_mcp.automacaodigital360.com/webhook/envia_ragc
+ * @method POST
+ * @format FormData
+ * 
+ * Dados esperados:
+ * {
+ *   file: File,        // O arquivo a ser enviado
+ *   category: string   // A categoria do documento
+ * }
+ */
 export const uploadFileToWebhook = async (file: File, category: string): Promise<boolean> => {
   const endpoints = getAllEndpoints();
   
   const formData = new FormData();
   formData.append('file', file);
   formData.append('category', category);
+
+  // Debug: Verificar se o arquivo está no FormData
+  console.log('=== DEBUG FORM DATA ===');
+  console.log('Arquivo:', file.name, 'Tamanho:', file.size, 'Tipo:', file.type);
+  console.log('Categoria:', category);
+  
+  // Verificar conteúdo do FormData
+  for (let [key, value] of formData.entries()) {
+    console.log(`FormData[${key}]:`, value);
+  }
+  console.log('========================');
 
   console.log('Enviando arquivo para o webhook:', file.name, 'categoria:', category);
   console.log('Endpoint usado:', endpoints.enviaRagc);
@@ -55,6 +81,21 @@ export const uploadFileToWebhook = async (file: File, category: string): Promise
   return true;
 };
 
+/**
+ * WEBHOOK DE EXCLUSÃO INDIVIDUAL - excluirArquivoRagc
+ * 
+ * Exclui um documento específico do sistema de conhecimento
+ * 
+ * @endpoint https://n8n_mcp.automacaodigital360.com/webhook/excluir-arquivo-ragc
+ * @method POST
+ * @format JSON
+ * @headers Content-Type: application/json
+ * 
+ * Dados esperados:
+ * {
+ *   titulo: string   // O título do documento a ser excluído
+ * }
+ */
 export const deleteDocumentFromWebhook = async (title: string): Promise<void> => {
   const endpoints = getAllEndpoints();
   
@@ -76,6 +117,19 @@ export const deleteDocumentFromWebhook = async (title: string): Promise<void> =>
   }
 };
 
+/**
+ * WEBHOOK DE LIMPEZA TOTAL - excluirRagc
+ * 
+ * Remove todos os documentos da base de conhecimento
+ * 
+ * @endpoint endpoints.excluirRagc
+ * @method POST
+ * @format JSON
+ * @headers Content-Type: application/json
+ * 
+ * Dados esperados:
+ * {}   // Objeto vazio (sem parâmetros necessários)
+ */
 export const clearAllDocumentsFromWebhook = async (): Promise<void> => {
   const endpoints = getAllEndpoints();
   
