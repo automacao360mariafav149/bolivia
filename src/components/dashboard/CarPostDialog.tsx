@@ -270,21 +270,21 @@ export function CarPostDialog({ open, onOpenChange }: CarPostDialogProps) {
           <div className="space-y-3">
             <Label className="text-base font-semibold">Tipo de Postagem</Label>
             <RadioGroup value={postType} onValueChange={setPostType}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Stories" id="stories" />
-                <Label htmlFor="stories">Stories</Label>
+              <div className="flex items-center space-x-2 opacity-60 cursor-not-allowed">
+                <RadioGroupItem value="Stories" id="stories" disabled />
+                <Label htmlFor="stories">Em Desenvolvimento - Stories</Label>
               </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Reels" id="reels" />
-                <Label htmlFor="reels">Reels</Label>
+              <div className="flex items-center space-x-2 opacity-60 cursor-not-allowed">
+                <RadioGroupItem value="Reels" id="reels" disabled />
+                <Label htmlFor="reels">Em Desenvolvimento - Reels</Label>
               </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Feed" id="feed" />
-                <Label htmlFor="feed">Feed</Label>
+              <div className="flex items-center space-x-2 opacity-60 cursor-not-allowed">
+                <RadioGroupItem value="Feed" id="feed" disabled />
+                <Label htmlFor="feed">Em Desenvolvimento - Feed</Label>
               </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Carrossel" id="carrossel" />
-                <Label htmlFor="carrossel">Carrossel</Label>
+              <div className="flex items-center space-x-2 opacity-60 cursor-not-allowed">
+                <RadioGroupItem value="Carrossel" id="carrossel" disabled />
+                <Label htmlFor="carrossel">Em Desenvolvimento - Carrossel</Label>
               </div>
             </RadioGroup>
           </div>

@@ -28,6 +28,8 @@ const VehicleStockDashboard = () => {
     vehicle.modelo.toLowerCase().includes(searchTerm.toLowerCase()) ||
     vehicle.ano.includes(searchTerm) ||
     vehicle.cor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (vehicle.km && vehicle.km.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (vehicle.descricao && vehicle.descricao.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (vehicle.status && vehicle.status.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
@@ -188,8 +190,9 @@ const VehicleStockDashboard = () => {
                         <TableHead className="dark:text-gray-300">Modelo</TableHead>
                         <TableHead className="dark:text-gray-300">Ano</TableHead>
                         <TableHead className="dark:text-gray-300">Cor</TableHead>
-                        <TableHead className="dark:text-gray-300">Quilometragem</TableHead>
+                        <TableHead className="dark:text-gray-300">Km</TableHead>
                         <TableHead className="dark:text-gray-300">Preço</TableHead>
+                        <TableHead className="dark:text-gray-300">Descrição</TableHead>
                         <TableHead className="dark:text-gray-300">Status</TableHead>
                         <TableHead className="dark:text-gray-300">Data Cadastro</TableHead>
                         <TableHead className="dark:text-gray-300">Data Venda</TableHead>
@@ -199,7 +202,7 @@ const VehicleStockDashboard = () => {
                   <TableBody>
                     {filteredVehicles.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={10} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <TableCell colSpan={11} className="text-center py-8 text-gray-500 dark:text-gray-400">
                           {searchTerm ? 'Nenhum veículo encontrado com os critérios de busca.' : 'Nenhum veículo cadastrado.'}
                         </TableCell>
                       </TableRow>
@@ -223,10 +226,15 @@ const VehicleStockDashboard = () => {
                             {vehicle.cor || 'N/A'}
                           </TableCell>
                           <TableCell className="dark:text-gray-300">
-                            {formatKm(vehicle.Km)}
+                            {formatKm(vehicle.km)}
                           </TableCell>
                           <TableCell className="dark:text-gray-300 font-semibold">
                             {formatPrice(vehicle.preco)}
+                          </TableCell>
+                          <TableCell className="dark:text-gray-300 max-w-[200px]">
+                            <div className="truncate" title={vehicle.descricao || ''}>
+                              {vehicle.descricao || 'N/A'}
+                            </div>
                           </TableCell>
                           <TableCell>
                             {getStatusBadge(vehicle.status)}

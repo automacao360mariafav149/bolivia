@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -76,12 +76,12 @@ export function useClientStats() {
         });
       }
 
-      // Fetch recent clients
+      // Fetch recent clients (last 15)
       const { data: recentClientsData } = await supabase
         .from('dados_cliente')
         .select('id, nome, telefone, created_at')
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(15);
 
       const recentClients = recentClientsData?.map((client: any) => ({
         id: client.id,
@@ -112,6 +112,11 @@ export function useClientStats() {
       setLoading(false);
     }
   }, [toast]);
+
+  // Fetch stats on mount
+  useEffect(() => {
+    refetchStats();
+  }, [refetchStats]);
 
   return { stats, loading, refetchStats };
 }

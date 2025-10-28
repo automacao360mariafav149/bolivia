@@ -39,9 +39,10 @@ export function useVehicleMetrics() {
       
       console.log('Fetching vehicle metrics...');
 
+      // Buscar todos os veículos com status e datas
       const { data: allVehicles, error: allError } = await supabase
         .from('estoque')
-        .select('id, status');
+        .select('id, status, data_cadastro, data_venda');
 
       if (allError) {
         console.error('Error fetching vehicles:', allError);
@@ -50,22 +51,41 @@ export function useVehicleMetrics() {
 
       console.log('All vehicles data:', allVehicles);
 
-      // Calculate metrics from the fetched data
+      // Datas do mês atual
+      const today = new Date();
+      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
       let availableCount = 0;
       let soldCount = 0;
+      let newEntriesCount = 0;
 
       if (allVehicles) {
-        allVehicles.forEach(vehicle => {
-          const status = (vehicle as any).status;
-          if (status === 'vendido') {
-            soldCount++;
-          } else {
+        allVehicles.forEach((vehicle: any) => {
+          const status = vehicle.status?.toLowerCase();
+          
+          // Veículos disponíveis: todos que NÃO estão vendidos
+          if (status !== 'vendido') {
             availableCount++;
+          }
+
+          // Vendidos no mês: status = vendido E data_venda no mês atual
+          if (status === 'vendido' && vehicle.data_venda) {
+            const dataVenda = new Date(vehicle.data_venda);
+            if (dataVenda >= firstDayOfMonth && dataVenda <= lastDayOfMonth) {
+              soldCount++;
+            }
+          }
+
+          // Entrada para venda no mês: cadastrados no mês atual (data_cadastro)
+          if (vehicle.data_cadastro) {
+            const dataCadastro = new Date(vehicle.data_cadastro);
+            if (dataCadastro >= firstDayOfMonth && dataCadastro <= lastDayOfMonth) {
+              newEntriesCount++;
+            }
           }
         });
       }
-
-      const newEntriesCount = availableCount;
 
       const newMetrics = {
         availableVehicles: availableCount,

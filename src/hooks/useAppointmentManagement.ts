@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { CalendarEvent, EventFormData } from '@/types/calendar';
 import { AppointmentType } from '@/services/calendarApi';
 import { fetchEvents, addEvent, updateEvent, deleteEvent } from '@/services/calendarApi';
-import { format, isSameDay } from 'date-fns';
+import { format, isSameDay, startOfMonth, endOfMonth, isAfter, parseISO } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 
 export function useAppointmentManagement(appointmentType: AppointmentType, selectedDate?: Date) {
@@ -25,17 +25,29 @@ export function useAppointmentManagement(appointmentType: AppointmentType, selec
     }
   }, [selectedDate]);
 
-  // Load events
+  // Load events - buscar mês inteiro quando selectedTab === 'all'
   useEffect(() => {
     const loadEvents = async () => {
       setIsLoading(true);
       setError(null);
       try {
         const dateToUse = currentSelectedDate || new Date();
-        const start = `${format(dateToUse, 'yyyy-MM-dd')}T00:00:00.000-03:00`;
-        const end = `${format(dateToUse, 'yyyy-MM-dd')}T23:59:59.999-03:00`;
         
-        console.log(`Loading events for ${appointmentType} on ${format(dateToUse, 'yyyy-MM-dd')}`);
+        let start, end;
+        
+        if (selectedTab === 'all') {
+          // Buscar o mês inteiro
+          const monthStart = startOfMonth(dateToUse);
+          const monthEnd = endOfMonth(dateToUse);
+          start = `${format(monthStart, 'yyyy-MM-dd')}T00:00:00.000-03:00`;
+          end = `${format(monthEnd, 'yyyy-MM-dd')}T23:59:59.999-03:00`;
+          console.log(`Loading all events for ${appointmentType} in month ${format(dateToUse, 'MM/yyyy')}`);
+        } else {
+          // Buscar apenas o dia
+          start = `${format(dateToUse, 'yyyy-MM-dd')}T00:00:00.000-03:00`;
+          end = `${format(dateToUse, 'yyyy-MM-dd')}T23:59:59.999-03:00`;
+          console.log(`Loading events for ${appointmentType} on ${format(dateToUse, 'yyyy-MM-dd')}`);
+        }
         
         const data = await fetchEvents(start, end, appointmentType);
         console.log('Loaded events:', data);
@@ -52,12 +64,13 @@ export function useAppointmentManagement(appointmentType: AppointmentType, selec
     };
 
     loadEvents();
-  }, [currentSelectedDate, appointmentType]);
+  }, [currentSelectedDate, appointmentType, selectedTab]); // Adicionar selectedTab como dependência
 
   // Filter events based on search and tab selection
   useEffect(() => {
     console.log('Filtering events. Search term:', searchTerm, 'Selected tab:', selectedTab);
     let filtered = events;
+    const now = new Date();
 
     // Filter by tab selection
     if (selectedTab === 'day' && currentSelectedDate) {
@@ -65,6 +78,13 @@ export function useAppointmentManagement(appointmentType: AppointmentType, selec
         isSameDay(new Date(event.start), currentSelectedDate)
       );
       console.log('Filtered by day:', filtered.length, 'events');
+    } else if (selectedTab === 'all') {
+      // Filtrar apenas eventos futuros (da hora atual em diante)
+      filtered = events.filter(event => {
+        const eventDate = parseISO(event.start);
+        return isAfter(eventDate, now) || isSameDay(eventDate, now);
+      });
+      console.log('Filtered future events:', filtered.length, 'events');
     }
 
     // Filter by search term

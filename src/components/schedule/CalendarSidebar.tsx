@@ -4,7 +4,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { useCalendarEvents } from '@/hooks/useCalendarEvents';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { AppointmentType } from '@/services/calendarApi';
-import { format } from 'date-fns';
+import { format, isSameDay } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { Clock, User } from 'lucide-react';
 
@@ -26,6 +26,29 @@ const CalendarSidebar = ({ appointmentType, onDateSelect, selectedDate }: Calend
 
   const displayDate = selectedDate || date;
 
+  // Criar conjunto de datas com eventos para destacar no calendário
+  const datesWithEvents = new Set(
+    events.map(event => {
+      const eventDate = new Date(event.start);
+      return format(eventDate, 'yyyy-MM-dd');
+    })
+  );
+
+  // Verificar se uma data tem eventos
+  const hasEvent = (date: Date) => {
+    const dateStr = format(date, 'yyyy-MM-dd');
+    return datesWithEvents.has(dateStr);
+  };
+
+  // Verificar se é o dia atual
+  const isToday = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const compareDate = new Date(date);
+    compareDate.setHours(0, 0, 0, 0);
+    return today.getTime() === compareDate.getTime();
+  };
+
   return (
     <div className="w-[350px] border-r p-4 overflow-y-auto bg-gradient-to-b from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
       <Card className="p-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg">
@@ -35,6 +58,14 @@ const CalendarSidebar = ({ appointmentType, onDateSelect, selectedDate }: Calend
           onSelect={handleDateSelect}
           className="rounded-md"
           locale={pt}
+          modifiers={{
+            hasEvent,
+            isToday,
+          }}
+          modifiersClassNames={{
+            hasEvent: 'bg-blue-100 text-blue-900 font-semibold dark:bg-blue-900/50 dark:text-blue-300 border-2 border-blue-500 dark:border-blue-400',
+            isToday: 'bg-yellow-100 text-yellow-900 font-bold dark:bg-yellow-900/50 dark:text-yellow-300 border-2 border-yellow-500 dark:border-yellow-400',
+          }}
         />
       </Card>
       

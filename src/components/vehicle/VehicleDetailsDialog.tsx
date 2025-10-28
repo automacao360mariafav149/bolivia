@@ -31,7 +31,7 @@ interface Vehicle {
   modelo: string;
   ano: string;
   cor: string;
-  Km: string;
+  km: string;  // Campo em minúsculo conforme o banco
   preco: string;
   descricao: string;
   drive_id: string;
@@ -97,43 +97,43 @@ const VehicleDetailsDialog: React.FC<VehicleDetailsDialogProps> = ({
       console.log('User role:', roleData);
       console.log('Role error:', roleError);
       
-      // Teste simples: atualizar apenas um campo para isolar o problema
-      const testUpdate = {
-        marca: formData.marca || vehicle.marca
+      // Preparar dados para atualização
+      const updateData: any = {
+        marca: formData.marca || vehicle.marca,
+        modelo: formData.modelo ?? null,
+        ano: formData.ano ?? null,
+        cor: formData.cor ?? null,
+        preco: formData.preco ?? null,
+        descricao: formData.descricao ?? null,
+        drive_id: formData.drive_id ?? null,
+        id_unico: formData.id_unico ?? null,
       };
       
-      console.log('Testing simple update with:', testUpdate);
+      // Adicionar km (minúsculo conforme o banco)
+      if (formData.km !== undefined && formData.km !== vehicle.km) {
+        updateData.km = formData.km;
+      }
+      
+      console.log('Updating with data:', updateData);
       console.log('Vehicle ID:', vehicle.id);
+      console.log('Current user permissions:', { user: userData?.user?.id, role: roleData });
 
       const { error, data } = await supabase
         .from('estoque')
-        .update(testUpdate)
+        .update(updateData)
         .eq('id', vehicle.id)
         .select();
 
       if (error) {
-        console.error('Simple update error:', error);
+        console.error('Update error:', error);
         console.error('Error code:', error.code);
         console.error('Error message:', error.message);
         console.error('Error details:', error.details);
         console.error('Error hint:', error.hint);
-        
-        // Se o teste simples falhar, tentar sem o .select()
-        console.log('Trying without .select()...');
-        const { error: error2 } = await supabase
-          .from('estoque')
-          .update(testUpdate)
-          .eq('id', vehicle.id);
-          
-        if (error2) {
-          console.error('Update without select also failed:', error2);
-          throw error2;
-        } else {
-          console.log('Update without select succeeded');
-        }
-      } else {
-        console.log('Simple update successful:', data);
+        throw error;
       }
+
+      console.log('Update successful:', data);
 
       toast({
         title: 'Veículo atualizado',
@@ -300,8 +300,8 @@ const VehicleDetailsDialog: React.FC<VehicleDetailsDialogProps> = ({
                   <Label htmlFor="km">Quilometragem</Label>
                   <Input
                     id="km"
-                    value={formData.Km || ''}
-                    onChange={(e) => handleChange('Km', e.target.value)}
+                    value={formData.km || ''}
+                    onChange={(e) => handleChange('km', e.target.value)}
                     disabled={!isEditing}
                     placeholder="Ex: 50000"
                   />

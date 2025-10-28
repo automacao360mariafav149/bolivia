@@ -1,6 +1,6 @@
 
-import React, { useEffect } from 'react';
-import { LineChart, Users, Smartphone, Car, TrendingUp, Plus } from 'lucide-react';
+import React from 'react';
+import { LineChart, Users, Car, TrendingUp, Plus, Activity } from 'lucide-react';
 import { useClientStats } from '@/hooks/useClientStats';
 import { useDashboardRealtime } from '@/hooks/useDashboardRealtime';
 import { useVehicleMetrics } from '@/hooks/useVehicleMetrics';
@@ -8,9 +8,6 @@ import { useVehicleMetrics } from '@/hooks/useVehicleMetrics';
 // Import components
 import DashboardHeader from '@/components/metrics/DashboardHeader';
 import StatCard from '@/components/metrics/StatCard';
-import ClientGrowthChart from '@/components/metrics/ClientGrowthChart';
-import VehicleTypesChart from '@/components/metrics/VehicleTypesChart';
-import ServicesBarChart from '@/components/metrics/ServicesBarChart';
 import RecentClientsTable from '@/components/metrics/RecentClientsTable';
 
 const MetricsDashboard = () => {
@@ -20,40 +17,9 @@ const MetricsDashboard = () => {
   // Conectar realtime updates com veículo
   useDashboardRealtime(refetchMetrics);
   
-  // Remover chamadas desnecessárias - os hooks já fazem fetch inicial
-  
-  const monthlyCustomersData = stats.monthlyGrowth?.length > 0 
-    ? stats.monthlyGrowth 
-    : [
-        { month: 'Jan', clients: 0 },
-        { month: 'Fev', clients: 0 },
-        { month: 'Mar', clients: 0 },
-        { month: 'Abr', clients: 0 },
-        { month: 'Mai', clients: 0 },
-        { month: 'Jun', clients: 0 },
-        { month: 'Jul', clients: 0 },
-        { month: 'Ago', clients: 0 },
-        { month: 'Set', clients: 0 },
-        { month: 'Out', clients: 0 },
-        { month: 'Nov', clients: 0 },
-        { month: 'Dez', clients: 0 }
-      ];
-  
-  const vehicleTypesData = [
-    { name: 'Sedan', value: 35, color: '#8B5CF6' },
-    { name: 'SUV', value: 25, color: '#3B82F6' },
-    { name: 'Hatchback', value: 20, color: '#10B981' },
-    { name: 'Pickup', value: 15, color: '#F59E0B' },
-    { name: 'Outros', value: 5, color: '#EF4444' }
-  ];
-
-  const vehicleServicesData = [
-    { name: 'Vendas', value: 45 },
-    { name: 'Manutenção', value: 35 },
-    { name: 'Consultoria', value: 20 },
-    { name: 'Financiamento', value: 30 },
-    { name: 'Seguros', value: 25 },
-  ];
+  // Obter o mês atual formatado
+  const currentMonth = new Date().toLocaleDateString('pt-BR', { month: 'long' });
+  const currentMonthCapitalized = currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1);
   
   const recentClientsData = stats.recentClients?.length > 0
     ? stats.recentClients
@@ -85,7 +51,7 @@ const MetricsDashboard = () => {
           />
           
           <StatCard 
-            title={`Vendidos em ${new Date().toLocaleDateString('pt-BR', { month: 'long' }).charAt(0).toUpperCase() + new Date().toLocaleDateString('pt-BR', { month: 'long' }).slice(1)}`}
+            title={`Vendidos em ${currentMonthCapitalized}`}
             value={vehicleMetrics.soldThisMonth}
             icon={<TrendingUp />}
             trend={`Vendas do mês vigente`}
@@ -95,7 +61,7 @@ const MetricsDashboard = () => {
           />
           
           <StatCard 
-            title={`Entrada para venda em ${new Date().toLocaleDateString('pt-BR', { month: 'long' }).charAt(0).toUpperCase() + new Date().toLocaleDateString('pt-BR', { month: 'long' }).slice(1)}`}
+            title={`Entrada para venda em ${currentMonthCapitalized}`}
             value={vehicleMetrics.newEntriesThisMonth}
             icon={<Plus />}
             trend={`Novos veículos cadastrados`}
@@ -105,35 +71,51 @@ const MetricsDashboard = () => {
           />
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Métricas de Clientes */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard 
             title="Total de Clientes"
             value={stats.totalClients}
             icon={<Users />}
-            trend={`Aumento de ${Math.round((stats.newClientsThisMonth / (stats.totalClients - stats.newClientsThisMonth || 1)) * 100)}% este mês`}
+            trend={`Todos os clientes cadastrados`}
+            loading={loading}
+            iconBgClass="bg-blue-100 dark:bg-blue-900/30"
+            iconTextClass="text-blue-600 dark:text-blue-400"
+          />
+          
+          <StatCard 
+            title="Clientes Ativos"
+            value={stats.activeClients}
+            icon={<Activity />}
+            trend={`Com status ativo`}
+            loading={loading}
+            iconBgClass="bg-green-100 dark:bg-green-900/30"
+            iconTextClass="text-green-600 dark:text-green-400"
+          />
+          
+          <StatCard 
+            title={`Novos em ${currentMonthCapitalized}`}
+            value={stats.newClientsThisMonth}
+            icon={<Plus />}
+            trend={`Cadastrados no mês vigente`}
+            loading={loading}
+            iconBgClass="bg-purple-100 dark:bg-purple-900/30"
+            iconTextClass="text-purple-600 dark:text-purple-400"
+          />
+
+          <StatCard 
+            title="Crescimento Mensal"
+            value={`${stats.growthPercentage > 0 ? '+' : ''}${stats.growthPercentage}%`}
+            icon={<TrendingUp />}
+            trend={`Comparado ao mês anterior`}
             loading={loading}
             iconBgClass="bg-orange-100 dark:bg-orange-900/30"
             iconTextClass="text-orange-600 dark:text-orange-400"
           />
-          
-          <StatCard 
-            title="Novos Clientes (Mês)"
-            value={stats.newClientsThisMonth}
-            icon={<Smartphone />}
-            trend={`+${stats.newClientsThisMonth} comparado ao mês anterior`}
-            loading={loading}
-            iconBgClass="bg-pink-100 dark:bg-pink-900/30"
-            iconTextClass="text-pink-600 dark:text-pink-400"
-          />
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <ClientGrowthChart data={monthlyCustomersData} loading={loading} />
-          <VehicleTypesChart data={vehicleTypesData} loading={loading} />
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ServicesBarChart data={vehicleServicesData} />
+        {/* Tabela de Clientes Recentes */}
+        <div className="mb-8">
           <RecentClientsTable clients={recentClientsData} loading={loading} />
         </div>
       </main>

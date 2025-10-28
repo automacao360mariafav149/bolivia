@@ -196,7 +196,7 @@ export type Database = {
           drive_id: string | null
           id: number
           id_unico: string | null
-          Km: string | null
+          km: string | null
           marca: string
           modelo: string | null
           preco: string | null
@@ -208,7 +208,7 @@ export type Database = {
           drive_id?: string | null
           id?: number
           id_unico?: string | null
-          Km?: string | null
+          km?: string | null
           marca: string
           modelo?: string | null
           preco?: string | null
@@ -220,7 +220,7 @@ export type Database = {
           drive_id?: string | null
           id?: number
           id_unico?: string | null
-          Km?: string | null
+          km?: string | null
           marca?: string
           modelo?: string | null
           preco?: string | null

@@ -10,7 +10,8 @@ interface VehicleStock {
   ano: string;
   cor: string;
   preco: string;
-  Km: string;
+  km: string;  // Campo em minúsculo conforme o banco
+  descricao: string;
   drive_id: string;
   postagem: string;
   tipo_midia: string;
@@ -43,6 +44,7 @@ export function useVehicleStock() {
       console.log('Vehicle stock data:', data);
       setVehicles((data || []).map(item => ({
         ...item,
+        descricao: (item as any).descricao || '',
         postagem: (item as any).postagem || '',
         tipo_midia: (item as any).tipo_midia || '',
         status: (item as any).status || '',
