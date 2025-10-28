@@ -59,7 +59,7 @@ jobs:
           protocol: ftp
           port: 21
           local-dir: ./dist/
-          server-dir: /public_html/grantimage.com/
+          server-dir: /
           dangerous-clean-slate: false
           exclude: |
             **/.git*
