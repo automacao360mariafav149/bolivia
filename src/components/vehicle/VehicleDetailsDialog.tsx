@@ -85,33 +85,55 @@ const VehicleDetailsDialog: React.FC<VehicleDetailsDialogProps> = ({
 
     setIsSaving(true);
     try {
-      // Preparar dados para atualização - removendo campos undefined/null que podem causar erro
-      const updateData: any = {};
+      // Verificar permissões do usuário atual
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      console.log('Current user:', userData?.user?.id);
       
-      if (formData.marca !== undefined && formData.marca !== '') updateData.marca = formData.marca;
-      if (formData.modelo !== undefined) updateData.modelo = formData.modelo || null;
-      if (formData.ano !== undefined) updateData.ano = formData.ano || null;
-      if (formData.cor !== undefined) updateData.cor = formData.cor || null;
-      if (formData.Km !== undefined) updateData.Km = formData.Km || null;
-      if (formData.preco !== undefined) updateData.preco = formData.preco || null;
-      if (formData.descricao !== undefined) updateData.descricao = formData.descricao || null;
-      if (formData.drive_id !== undefined) updateData.drive_id = formData.drive_id || null;
-      if (formData.id_unico !== undefined) updateData.id_unico = formData.id_unico || null;
-
-      console.log('Updating with data:', updateData);
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userData?.user?.id);
+      
+      console.log('User role:', roleData);
+      console.log('Role error:', roleError);
+      
+      // Teste simples: atualizar apenas um campo para isolar o problema
+      const testUpdate = {
+        marca: formData.marca || vehicle.marca
+      };
+      
+      console.log('Testing simple update with:', testUpdate);
+      console.log('Vehicle ID:', vehicle.id);
 
       const { error, data } = await supabase
         .from('estoque')
-        .update(updateData)
+        .update(testUpdate)
         .eq('id', vehicle.id)
         .select();
 
       if (error) {
-        console.error('Update error:', error);
-        throw error;
+        console.error('Simple update error:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
+        console.error('Error details:', error.details);
+        console.error('Error hint:', error.hint);
+        
+        // Se o teste simples falhar, tentar sem o .select()
+        console.log('Trying without .select()...');
+        const { error: error2 } = await supabase
+          .from('estoque')
+          .update(testUpdate)
+          .eq('id', vehicle.id);
+          
+        if (error2) {
+          console.error('Update without select also failed:', error2);
+          throw error2;
+        } else {
+          console.log('Update without select succeeded');
+        }
+      } else {
+        console.log('Simple update successful:', data);
       }
-
-      console.log('Update successful:', data);
 
       toast({
         title: 'Veículo atualizado',
