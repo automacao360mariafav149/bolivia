@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, ChevronLeft, ChevronRight, ZoomIn, Loader2 } from 'lucide-react';
+import { X, ZoomIn, Loader2, Maximize2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -21,50 +22,36 @@ const DriveGallery: React.FC<DriveGalleryProps> = ({
   driveId,
   vehicleInfo
 }) => {
-  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && driveId) {
+      setLoading(true);
+      setTimeout(() => setLoading(false), 500);
+    }
+  }, [isOpen, driveId]);
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (currentIndex !== null) {
-      if (e.key === 'ArrowLeft') handlePrevious();
-      if (e.key === 'ArrowRight') handleNext();
-    }
     if (e.key === 'Escape') {
-      if (currentIndex !== null) {
-        setCurrentIndex(null);
+      if (isFullscreen) {
+        setIsFullscreen(false);
       } else {
         onClose();
       }
     }
   };
 
-  const handlePrevious = () => {
-    // Será implementado com os IDs das imagens
-  };
-
-  const handleNext = () => {
-    // Será implementado com os IDs das imagens
-  };
-
-  const openFullImage = (index: number) => {
-    setCurrentIndex(index);
-  };
-
-  const closeFullImage = () => {
-    setCurrentIndex(null);
-  };
-
-  // URLs que serão construídas com os IDs dos arquivos da pasta
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [thumbnailUrls, setThumbnailUrls] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (isOpen && driveId) {
-      // Por enquanto, vamos usar o iframe mas com melhor integração
-      setLoading(true);
-      setTimeout(() => setLoading(false), 1000);
-    }
-  }, [isOpen, driveId]);
+  // Lista de filenames das imagens para exibição em grade grande
+  const imageFiles = [
+    '1_110730.jpg', '2_110730.jpg', '3_110730.jpg', '4_110730.jpg',
+    '5_110730.jpg', '7_110730.jpg', '10_110730.jpg', '11_110730.jpg',
+    '13_110730.jpg', '14_110730.jpg', '15_110730.jpg'
+  ];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -73,26 +60,30 @@ const DriveGallery: React.FC<DriveGalleryProps> = ({
         onKeyDown={handleKeyDown}
       >
         <DialogHeader className="absolute top-0 left-0 right-0 z-50 p-4 bg-gradient-to-b from-black/90 to-transparent">
+          <DialogDescription className="sr-only">
+            Galeria de imagens do veículo exibida via Google Drive
+          </DialogDescription>
           <DialogTitle className="text-xl font-bold text-white flex items-center justify-between">
             <span>{vehicleInfo || 'Galeria do Veículo'}</span>
-            {currentIndex !== null && (
+            <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={closeFullImage}
+                onClick={toggleFullscreen}
                 className="text-white hover:bg-white/20"
               >
-                ← Voltar para grade
+                {isFullscreen ? <ZoomIn className="h-5 w-5 mr-1" /> : <Maximize2 className="h-5 w-5 mr-1" />}
+                {isFullscreen ? 'Tela Normal' : 'Tela Cheia'}
               </Button>
-            )}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="text-white hover:bg-white/20"
-            >
-              <X className="h-5 w-5" />
-            </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                className="text-white hover:bg-white/20"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
           </DialogTitle>
         </DialogHeader>
 
@@ -102,8 +93,7 @@ const DriveGallery: React.FC<DriveGalleryProps> = ({
               <Loader2 className="h-12 w-12 text-white animate-spin" />
               <p className="text-white text-sm">Carregando galeria...</p>
             </div>
-          ) : currentIndex === null ? (
-            // MODO GRADE - Iframe do Google Drive
+          ) : (
             <div className="relative w-full h-full bg-gray-900">
               <iframe
                 src={`https://drive.google.com/embeddedfolderview?id=${driveId}#grid`}
@@ -114,20 +104,13 @@ const DriveGallery: React.FC<DriveGalleryProps> = ({
                   colorScheme: 'dark'
                 }}
               />
-              {/* Instrução flutuante */}
+              
+              {/* Instruções */}
               <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/80 text-white px-6 py-3 rounded-full text-sm backdrop-blur-md border border-white/20 shadow-lg">
                 <p className="flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                  Clique nas fotos/vídeos para visualizar em tela cheia
+                  <ZoomIn className="h-4 w-4" />
+                  Clique nas fotos para visualizar em tela cheia • Pressione ESC para fechar
                 </p>
-              </div>
-            </div>
-          ) : (
-            // MODO VISUALIZAÇÃO AMPLIADA (será implementado quando tivermos os URLs)
-            <div className="relative w-full h-full flex items-center justify-center bg-gray-900">
-              <div className="text-white text-center">
-                <p>Visualização ampliada será implementada</p>
-                <p className="text-sm text-gray-400 mt-2">Ao implementar, aqui aparecerá a imagem em tela cheia</p>
               </div>
             </div>
           )}

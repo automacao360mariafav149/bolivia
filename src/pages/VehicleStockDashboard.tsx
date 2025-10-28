@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useVehicleStock } from '@/hooks/useVehicleStock';
 import AddVehicleDialog from '@/components/vehicle/AddVehicleDialog';
+import VehicleDetailsDialog from '@/components/vehicle/VehicleDetailsDialog';
 import Header from '@/components/layout/Header';
 import ImageCarousel from '@/components/vehicle/ImageCarousel';
 import DriveGallery from '@/components/vehicle/DriveGallery';
@@ -19,6 +20,8 @@ const VehicleStockDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [carouselOpen, setCarouselOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState<{driveId: string, info: string} | null>(null);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [selectedVehicleDetails, setSelectedVehicleDetails] = useState<any | null>(null);
 
   const filteredVehicles = vehicles.filter(vehicle => 
     vehicle.marca.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -67,7 +70,8 @@ const VehicleStockDashboard = () => {
     return <Badge variant="outline">{status}</Badge>;
   };
 
-  const openPhotos = (driveId: string, marca: string, modelo: string, ano: string) => {
+  const openPhotos = (e: React.MouseEvent, driveId: string, marca: string, modelo: string, ano: string) => {
+    e.stopPropagation(); // Evita que o clique acione a abertura do dialog de detalhes
     if (driveId) {
       setSelectedVehicle({
         driveId: driveId,
@@ -75,6 +79,11 @@ const VehicleStockDashboard = () => {
       });
       setCarouselOpen(true);
     }
+  };
+
+  const openVehicleDetails = (vehicle: any) => {
+    setSelectedVehicleDetails(vehicle);
+    setDetailsDialogOpen(true);
   };
 
   const actionButtons = (
@@ -196,7 +205,11 @@ const VehicleStockDashboard = () => {
                       </TableRow>
                     ) : (
                       filteredVehicles.map((vehicle) => (
-                        <TableRow key={vehicle.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <TableRow 
+                          key={vehicle.id} 
+                          className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                          onClick={() => openVehicleDetails(vehicle)}
+                        >
                           <TableCell className="font-medium dark:text-white">
                             {vehicle.marca || 'N/A'}
                           </TableCell>
@@ -228,7 +241,7 @@ const VehicleStockDashboard = () => {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => openPhotos(vehicle.drive_id, vehicle.marca, vehicle.modelo, vehicle.ano)}
+                              onClick={(e) => openPhotos(e, vehicle.drive_id, vehicle.marca, vehicle.modelo, vehicle.ano)}
                               disabled={!vehicle.drive_id}
                               className="flex items-center gap-2"
                             >
@@ -275,6 +288,18 @@ const VehicleStockDashboard = () => {
           )}
         </>
       )}
+
+      {/* Dialog de Detalhes do Veículo */}
+      <VehicleDetailsDialog
+        isOpen={detailsDialogOpen}
+        onClose={() => {
+          setDetailsDialogOpen(false);
+          setSelectedVehicleDetails(null);
+        }}
+        vehicle={selectedVehicleDetails}
+        onVehicleUpdated={refetchVehicles}
+        onVehicleDeleted={refetchVehicles}
+      />
     </div>
   );
 };
